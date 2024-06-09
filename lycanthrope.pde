@@ -1,3 +1,5 @@
+import java.util.Map;
+
 int X_MIN = 25;
 int X_MAX = X_MIN;
 int Y_MIN = 25;
@@ -89,6 +91,9 @@ void setup() {
   for (int r = 0; r < ROOMS.size(); r++) {
     ROOMS.get(r).setDoors(X_MIN, X_MAX, Y_MIN, Y_MAX);
   }
+  int itemIndex = int(random(ROOMS.size()));
+  println("Item is in room " + itemIndex);
+  ROOMS.get(itemIndex).addItem("Cure", X_MIN, X_MAX, Y_MIN, Y_MAX);
 }
 
 void mousePressed() {
@@ -108,6 +113,8 @@ void draw() {
   String warpKey = PLAYER.detectRoomTravel(ROOMS.get(ROOM_CURRENT_INDEX).doors);
   if (warpKey.length() > 0) {
     ROOM_CURRENT_INDEX = ROOMS.get(ROOM_CURRENT_INDEX).warpMap.get(warpKey);
+  } else {
+    PLAYER.detectItems(ROOMS.get(ROOM_CURRENT_INDEX).items);
   }
   
   noStroke();

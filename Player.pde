@@ -61,13 +61,18 @@ class Player {
     yMax = maxY;
   }
   
+  // Returns whether the player is within step distance to a given coordinate
+  boolean isNearCoordinate(int coordinateX, int coordinateY) {
+    return abs(coordinateY - y) < stepY && abs(coordinateX - x) < stepX;
+  }
+  
   // Returns the direction of the room where the player can travel to another room.
   // This will modify the state of the player.
   // A return value of an empty string indicates that there is no room traversal occurring.
   String detectRoomTravel(HashMap<String, Door> roomDoors) {
     for (Map.Entry me: roomDoors.entrySet()) {
       Door door = roomDoors.get(me.getKey());
-      if (abs(door.y - y) < stepY && abs(door.x - x) < stepY && !door.isLocked) {
+      if (isNearCoordinate(door.x, door.y) && !door.isLocked) {
         x = door.xWarpTo;
         y = door.yWarpTo;
         isMoving = false;
@@ -75,5 +80,13 @@ class Player {
       }
     }
     return "";
+  }
+  
+  void detectItems(ArrayList<Item> items) {
+    for (int i = 0; i < items.size(); i++) {
+      if (isNearCoordinate(items.get(i).x, items.get(i).y) && !items.get(i).isCollected) {
+        items.get(i).setCollected();
+      }
+    }
   }
 }

@@ -1,8 +1,7 @@
-import java.util.Map;
-
 class Room {
   HashMap<String, Integer> warpMap = new HashMap<String, Integer>();  
   HashMap<String, Door> doors = new HashMap<String, Door>();
+  ArrayList<Item> items = new ArrayList<Item>();
   int unlockedDoorsMax = 2;
   
   Room(int roomIndexN, int roomIndexE, int roomIndexS, int roomIndexW) {
@@ -55,5 +54,14 @@ class Room {
     for (Map.Entry me: doors.entrySet()) {
       doors.get(me.getKey()).drawDoor(!unlockedDoors.contains(me.getKey()) && unlockedDoors.size() >= unlockedDoorsMax);
     }
+    for (int i = 0; i < items.size(); i++) {
+      items.get(i).drawItem();
+    }
+  }
+  
+  void addItem(String itemName, int xMin, int xMax, int yMin, int yMax) {
+    int itemX = xMin + int(random(xMax));
+    int itemY = yMin + int(random(yMax));
+    items.add(new Item(itemName, itemX, itemY));
   }
 }
