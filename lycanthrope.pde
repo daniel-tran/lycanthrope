@@ -18,6 +18,33 @@ String getOppositeDirection(String direction) {
   return "";
 }
 
+// Swaps the room indexes for 2 specified rooms in a given direction per room.
+// This will also implicitly swap the room indexes for whatever rooms are currently being connected by these rooms in the specified directions.
+// For visual clarity, suppose this is a sample of the current warp mapping of some rooms:
+// Room 4 -- Door E --> Room 5
+// Room 2 <-- Door W -- Room 0
+//
+// If we invoke swapWarps(4, 0, "E", "W"), the following warp mappings are modified:
+// Room 4 -- Door E --> Room 0
+// Room 4 <-- Door W -- Room 0
+// Room 2 -- Door E --> Room 5
+// Room 2 <-- Door W -- Room 5
+void swapWarps(int roomIndexFrom, int roomIndexTo, String directionFrom, String directionTo) {
+  int roomFromCurrentWarp = ROOMS.get(roomIndexFrom).warpMap.get(directionFrom);
+  String roomFromCurrentWarpDirection = getOppositeDirection(directionFrom);
+  
+  int roomToCurrentWarp = ROOMS.get(roomIndexTo).warpMap.get(directionTo);
+  String roomToCurrentWarpDirection = getOppositeDirection(directionTo);
+  
+  println("Swapping rooms " + roomIndexFrom + " <--> " + roomIndexTo + " (" + directionFrom + ", " + directionTo + ")");
+  ROOMS.get(roomIndexFrom).warpMap.put(directionFrom, roomIndexTo);
+  ROOMS.get(roomIndexTo).warpMap.put(directionTo, roomIndexFrom);
+  
+  println("Swapping rooms " + roomFromCurrentWarp + " <--> " + roomToCurrentWarp + " (" + roomFromCurrentWarpDirection + ", " + roomToCurrentWarpDirection + ")");
+  ROOMS.get(roomFromCurrentWarp).warpMap.put(roomFromCurrentWarpDirection, roomToCurrentWarp);
+  ROOMS.get(roomToCurrentWarp).warpMap.put(roomToCurrentWarpDirection, roomFromCurrentWarp);
+}
+
 void keyPressed() {
   String keyCap = String.valueOf(Character.toUpperCase(key));
   switch(keyCap) {
@@ -56,6 +83,8 @@ void setup() {
   ROOMS.add(new Room(3, 7, 0, 8));
   ROOMS.add(new Room(4, 8, 1, 6));
   ROOMS.add(new Room(5, 6, 2, 7));
+  
+  swapWarps(4, 0, "E", "W");
   
   for (int r = 0; r < ROOMS.size(); r++) {
     ROOMS.get(r).setDoors(X_MIN, X_MAX, Y_MIN, Y_MAX);
