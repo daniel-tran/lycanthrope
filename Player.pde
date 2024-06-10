@@ -63,7 +63,7 @@ class Player {
   
   // Returns whether the player is within step distance to a given coordinate
   boolean isNearCoordinate(int coordinateX, int coordinateY) {
-    return abs(coordinateY - y) < stepY && abs(coordinateX - x) < stepX;
+    return abs(coordinateY - y) < (stepY * 2) && abs(coordinateX - x) < (stepX * 2);
   }
   
   // Returns the direction of the room where the player can travel to another room.
