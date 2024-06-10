@@ -59,7 +59,7 @@ class Door {
     return abs(coordinateY - buttonY) < (buttonHeight / 2) && abs(coordinateX - buttonX) < (buttonWidth / 2);
   }
   
-  void drawDoor(boolean hasUnlockedMaxDoors) {    
+  void drawDoor(boolean hasUnlockedMaxDoors, PImage lockImg) {
     if (hasUnlockedMaxDoors) {
       fill(255, 0, 0);
     } else if (!isLocked) {
@@ -75,14 +75,8 @@ class Door {
     rect(x + offsetX, y + offsetY, doorWidth, doorHeight);
     
     if (!hasUnlockedMaxDoors) {
-      ellipseMode(CENTER);
-      stroke(0);
-      if (!isLocked) {
-        fill(255, 0, 0);
-      } else {
-        fill(0, 255, 0);
-      }
-      ellipse(buttonX, buttonY, buttonWidth, buttonHeight);
+      imageMode(CENTER);
+      image(lockImg, buttonX, buttonY, buttonWidth, buttonHeight);
     }
   }
 }

@@ -49,10 +49,13 @@ class Room {
     return true;
   }
   
-  void drawRoom() {
+  void drawRoom(PImage lockDisabledImg, PImage lockEnabledImg) {
     ArrayList<String> unlockedDoors = getDoors(false);
     for (Map.Entry me: doors.entrySet()) {
-      doors.get(me.getKey()).drawDoor(!unlockedDoors.contains(me.getKey()) && unlockedDoors.size() >= unlockedDoorsMax);
+      boolean isPermaLocked = !unlockedDoors.contains(me.getKey()) && unlockedDoors.size() >= unlockedDoorsMax;
+      // Select the right icon for the door when it can be interacted with
+      PImage lockImg = doors.get(me.getKey()).isLocked ? lockEnabledImg : lockDisabledImg;
+      doors.get(me.getKey()).drawDoor(isPermaLocked, lockImg);
     }
     for (int i = 0; i < items.size(); i++) {
       items.get(i).drawItem();

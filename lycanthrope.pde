@@ -18,6 +18,7 @@ ArrayList<Room> ROOMS = new ArrayList<Room>();
 int ROOM_CURRENT_INDEX;
 ArrayList<Item> ITEMS_COLLECTED = new ArrayList<Item>();
 Stats GAME_STATS = new Stats();
+HashMap<String, PImage> GAME_IMAGES = new HashMap<String, PImage>();
 
 // Returns the direction corresponding to the opposite of the given value
 String getOppositeDirection(String direction) {
@@ -115,6 +116,8 @@ void setup() {
   size(960, 540);
   X_MAX = width - X_MIN;
   Y_MAX = height - Y_MIN;
+  GAME_IMAGES.put("LOCK_DISABLED", loadImage("images/LockDisabled.png"));
+  GAME_IMAGES.put("LOCK_ENABLED", loadImage("images/LockEnabled.png"));
   gameReset();
 }
 
@@ -174,7 +177,8 @@ void mainGameLoop() {
   fill(0, 28, 128);
   rect(X_MIN, Y_MIN, X_MAX, Y_MAX);
   
-  ROOMS.get(ROOM_CURRENT_INDEX).drawRoom();
+  // Pass images into the draw functions to avoid storing them multiple times for each Door class instance
+  ROOMS.get(ROOM_CURRENT_INDEX).drawRoom(GAME_IMAGES.get("LOCK_ENABLED"), GAME_IMAGES.get("LOCK_DISABLED"));
   
   stroke(0);
   fill(255);
