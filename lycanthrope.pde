@@ -72,7 +72,6 @@ void gameReset() {
   PLAYER = new Player(width / 2, height / 2, 5, 5);
   PLAYER.setTravelBoundaries(X_MIN, X_MAX, Y_MIN, Y_MAX);
   ITEMS_COLLECTED.clear();
-  ROOM_CURRENT_INDEX = 4;
   ROOMS.clear();
   ROOMS.add(new Room(6, 1, 3, 2));
   ROOMS.add(new Room(7, 2, 4, 0));
@@ -86,6 +85,7 @@ void gameReset() {
   ROOMS.add(new Room(4, 8, 1, 6));
   ROOMS.add(new Room(5, 6, 2, 7));
   
+  ROOM_CURRENT_INDEX = int(random(ROOMS.size()));
   for (int r = 0; r < ROOMS.size(); r++) {
     ROOMS.get(r).setDoors(X_MIN, X_MAX, Y_MIN, Y_MAX, DOORS_BUTTON_LENGTH);
     // Since doors and warp locations are stored as different Room class members,
