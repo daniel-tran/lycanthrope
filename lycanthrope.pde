@@ -10,7 +10,8 @@ enum GameState {
   STAGE_COMPLETE
 };
 GameState GAME_STATE = GameState.IN_GAME;
-int ITEM_STAGE_COMPLETE = 1;
+int ITEM_STAGE_COMPLETE = 0;
+int ITEMS_COUNT = 5;
 
 Player PLAYER;
 ArrayList<Room> ROOMS = new ArrayList<Room>();
@@ -101,9 +102,12 @@ void gameReset() {
       swapWarps(r, roomToSwap, direction, getOppositeDirection(direction));
     }
   }
-  int itemIndex = int(random(ROOMS.size()));
-  println("Item is in room " + itemIndex);
-  ROOMS.get(itemIndex).addItem(ITEM_STAGE_COMPLETE, X_MIN, X_MAX, Y_MIN, Y_MAX);
+  
+  for (int i = ITEM_STAGE_COMPLETE; i < ITEMS_COUNT; i++) {
+    int roomIndex = int(random(ROOMS.size()));
+    println("Item is in room " + roomIndex);
+    ROOMS.get(roomIndex).addItem(i, X_MIN, X_MAX, Y_MIN, Y_MAX);
+  }
 }
 
 void setup() {
@@ -146,7 +150,7 @@ void mainGameLoop() {
     ROOM_CURRENT_INDEX = ROOMS.get(ROOM_CURRENT_INDEX).warpMap.get(warpKey);
   } else {
     int collectedItemId = PLAYER.detectItems(ROOMS.get(ROOM_CURRENT_INDEX).items);
-    if (collectedItemId > 0) {
+    if (collectedItemId >= 0) {
       // Items are positioned as part of the final display once the stage is complete
       ITEMS_COLLECTED.add(new Item(collectedItemId, X_MIN + (X_MIN * ITEMS_COLLECTED.size()), height / 2));
       if (collectedItemId == ITEM_STAGE_COMPLETE) {

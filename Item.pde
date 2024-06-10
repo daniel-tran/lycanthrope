@@ -3,27 +3,46 @@ class Item {
   int x;
   int y;
   String name;
+  color colour;
   boolean isCollected = false;
   
   Item(int itemId, int startX, int startY) {
-    id = itemId;
-    name = getNameFromItemId(itemId);
+    setPropertiesFromItemId(itemId);
     x = startX;
     y = startY;
   }
   
-  // Returns the item's name based on its ID
-  String getNameFromItemId(int itemId) {
+  // Sets various class members based on its ID (including the id property itself)
+  void setPropertiesFromItemId(int itemId) {
+    id = itemId;
     switch(itemId) {
-      case 1: return "Cure";
+      case 0:
+        name = "Cure";
+        colour = #BCDDB3;
+        break;
+      case 1:
+        name = "Fish";
+        colour = #E9967A;
+        break;
+      case 2:
+        name = "Homsar's Hat";
+        colour = #E7B53B;
+        break;
+      case 3:
+        name = "Bear Plush";
+        colour = #694D3A;
+        break;
+      case 4:
+        name = "Bread";
+        colour = #C5AF91;
+        break;
     }
-    return "";
   }
   
   void drawItem() {
     if (!isCollected) {
       rectMode(CENTER);
-      fill(188, 221, 179);
+      fill(colour);
       rect(x, y, 16, 16);
     }
   }

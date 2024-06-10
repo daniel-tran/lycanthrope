@@ -89,6 +89,6 @@ class Player {
         return items.get(i).id;
       }
     }
-    return 0;
+    return -1;
   }
 }
