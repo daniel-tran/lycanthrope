@@ -17,6 +17,7 @@ Player PLAYER;
 ArrayList<Room> ROOMS = new ArrayList<Room>();
 int ROOM_CURRENT_INDEX;
 ArrayList<Item> ITEMS_COLLECTED = new ArrayList<Item>();
+Stats GAME_STATS = new Stats();
 
 // Returns the direction corresponding to the opposite of the given value
 String getOppositeDirection(String direction) {
@@ -128,6 +129,12 @@ void mousePressed() {
         for (Map.Entry me: ROOMS.get(ROOM_CURRENT_INDEX).doors.entrySet()) {
           if (ROOMS.get(ROOM_CURRENT_INDEX).doors.get(me.getKey()).isPressed(mouseX, mouseY)) {
             toggleRoom(ROOMS.get(ROOM_CURRENT_INDEX).doors.get(me.getKey()).doorKey);
+            
+            if (ROOMS.get(ROOM_CURRENT_INDEX).doors.get(me.getKey()).isLocked) {
+              GAME_STATS.registerDoorLock();
+            } else {
+              GAME_STATS.registerDoorUnlock();
+            }
           }
         }
       }
@@ -135,6 +142,7 @@ void mousePressed() {
       break;
     case STAGE_COMPLETE:
       GAME_STATE = GameState.IN_GAME;
+      GAME_STATS.increaseStageAndReset();
       gameReset();
       break;
   }
@@ -148,11 +156,12 @@ void mainGameLoop() {
   String warpKey = PLAYER.detectRoomTravel(ROOMS.get(ROOM_CURRENT_INDEX).doors);
   if (warpKey.length() > 0) {
     ROOM_CURRENT_INDEX = ROOMS.get(ROOM_CURRENT_INDEX).warpMap.get(warpKey);
+    GAME_STATS.registerRoomTraverse();
   } else {
     int collectedItemId = PLAYER.detectItems(ROOMS.get(ROOM_CURRENT_INDEX).items);
     if (collectedItemId >= 0) {
       // Items are positioned as part of the final display once the stage is complete
-      ITEMS_COLLECTED.add(new Item(collectedItemId, X_MIN + (X_MIN * ITEMS_COLLECTED.size()), height / 2));
+      ITEMS_COLLECTED.add(new Item(collectedItemId, X_MIN + (X_MIN * ITEMS_COLLECTED.size()), int(height * 0.75)));
       if (collectedItemId == ITEM_STAGE_COMPLETE) {
         // Stage completes after collecting the necessary item
         GAME_STATE = GameState.STAGE_COMPLETE;
@@ -177,13 +186,24 @@ void stageCompleteLoop() {
   fill(255, 255, 255);
   textSize(64);
   textAlign(CENTER);
-  text("Stage complete!", width / 2, Y_MIN);
+  text("Stage "+ GAME_STATS.stage + " complete!", width / 2, Y_MIN);
+  
+  textSize(32);
+  textAlign(LEFT);
+  ArrayList<String> statsList = GAME_STATS.getStatsList();
+  int statsY = int(height * 0.25);
+  int statsYInc = Y_MIN;
+  for (int s = 0; s < statsList.size(); s++) {
+    text(statsList.get(s), X_MIN, statsY + (statsYInc * s));
+  }
   
   for (int i = 0; i < ITEMS_COLLECTED.size(); i++) {
     ITEMS_COLLECTED.get(i).drawItem();
   }
   
+  fill(255, 255, 255);
   textSize(32);
+  textAlign(CENTER);
   text("Press the screen for the next stage", width / 2, Y_MAX);
 }
 
