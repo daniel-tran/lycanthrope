@@ -3,7 +3,11 @@ class Item {
   int x;
   int y;
   String name;
-  color colour;
+  // Items are OK to store image data since most items will use dedicated sprites
+  // though it's worth keeping an eye on this if duplicate items are supported.
+  PImage sprite;
+  int spriteWidth = 24;
+  int spriteHeight = spriteWidth;
   boolean isCollected = false;
   
   Item(int itemId, int startX, int startY) {
@@ -18,32 +22,31 @@ class Item {
     switch(itemId) {
       case 0:
         name = "Cure";
-        colour = #BCDDB3;
+        sprite = loadImage("images/Item" + name +".png");
         break;
       case 1:
         name = "Fish";
-        colour = #E9967A;
+        sprite = loadImage("images/Item" + name +".png");
         break;
       case 2:
         name = "Homsar's Hat";
-        colour = #E7B53B;
+        sprite = loadImage("images/ItemHomsarsHat.png");
         break;
       case 3:
         name = "Bear Plush";
-        colour = #694D3A;
+        sprite = loadImage("images/ItemBear.png");
         break;
       case 4:
         name = "Bread";
-        colour = #C5AF91;
+        sprite = loadImage("images/Item" + name +".png");
         break;
     }
   }
   
   void drawItem() {
     if (!isCollected) {
-      rectMode(CENTER);
-      fill(colour);
-      rect(x, y, 16, 16);
+      imageMode(CENTER);
+      image(sprite, x, y, spriteWidth, spriteHeight);
     }
   }
   
