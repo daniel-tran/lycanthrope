@@ -86,10 +86,20 @@ void gameReset() {
   ROOMS.add(new Room(4, 8, 1, 6));
   ROOMS.add(new Room(5, 6, 2, 7));
   
-  swapWarps(4, 0, "E", "W");
-  
   for (int r = 0; r < ROOMS.size(); r++) {
     ROOMS.get(r).setDoors(X_MIN, X_MAX, Y_MIN, Y_MAX, DOORS_BUTTON_LENGTH);
+    // Since doors and warp locations are stored as different Room class members,
+    // it's possible to randomise the warp maps during the set up of the doors.
+    for (Map.Entry me: ROOMS.get(r).doors.entrySet()) {
+      String direction = ROOMS.get(r).doors.get(me.getKey()).doorKey;
+      int roomToSwap = int(random(ROOMS.size()));
+      // Room cannot warp to itself, so just go to the next room instead.
+      // This assumes the number of rooms available is >1.
+      if (roomToSwap == r) {
+        roomToSwap = (roomToSwap + 1) % ROOMS.size();
+      }
+      swapWarps(r, roomToSwap, direction, getOppositeDirection(direction));
+    }
   }
   int itemIndex = int(random(ROOMS.size()));
   println("Item is in room " + itemIndex);
