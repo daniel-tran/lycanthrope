@@ -149,7 +149,7 @@ void mousePressed() {
 }
 
 void mainGameLoop() {
-  background(128, 128, 0);
+  background(#C7A07A);
   if (PLAYER.isMoving) {
     PLAYER.doTravel();
   }

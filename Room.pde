@@ -14,10 +14,10 @@ class Room {
   // Handles set up of doors in the room
   void setDoors(int xMin, int xMax, int yMin, int yMax, int buttonLength) {
     doors.clear();
-    doors.put("N", new Door("N", buttonLength, width / 2, yMin, width / 2, yMax - yMin));
-    doors.put("S", new Door("S", buttonLength, width / 2, yMax, width / 2, yMin * 2));
-    doors.put("W", new Door("W", buttonLength, xMin, height / 2, xMax - xMin, height / 2));
-    doors.put("E", new Door("E", buttonLength, xMax, height / 2, xMin * 2, height / 2));
+    doors.put("N", new Door("N", xMin, yMin, buttonLength, width / 2, yMin, width / 2, yMax - yMin));
+    doors.put("S", new Door("S", xMin, yMin, buttonLength, width / 2, yMax, width / 2, yMin * 2));
+    doors.put("W", new Door("W", xMin, yMin, buttonLength, xMin, height / 2, xMax - xMin, height / 2));
+    doors.put("E", new Door("E", xMin, yMin, buttonLength, xMax, height / 2, xMin * 2, height / 2));
   }
   
   // Returns a list of directions matching the given parameters
