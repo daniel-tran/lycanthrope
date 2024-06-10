@@ -1,9 +1,10 @@
 import java.util.Map;
 
-int X_MIN = 25;
+int X_MIN = 50;
 int X_MAX = X_MIN;
-int Y_MIN = 25;
+int Y_MIN = 50;
 int Y_MAX = Y_MIN;
+int DOORS_BUTTON_LENGTH = 30;
 
 Player PLAYER;
 ArrayList<Room> ROOMS = new ArrayList<Room>();
@@ -47,25 +48,15 @@ void swapWarps(int roomIndexFrom, int roomIndexTo, String directionFrom, String 
   ROOMS.get(roomToCurrentWarp).warpMap.put(roomToCurrentWarpDirection, roomFromCurrentWarp);
 }
 
-void keyPressed() {
-  String keyCap = String.valueOf(Character.toUpperCase(key));
-  switch(keyCap) {
-    case "W":
-    case "E":
-    case "S":
-    case "N":
-      println("Setting room status for " + ROOM_CURRENT_INDEX + " & " + ROOMS.get(ROOM_CURRENT_INDEX).warpMap.get(keyCap));
-      
-      if (ROOMS.get(ROOM_CURRENT_INDEX).canToggleDoor(keyCap)) {
-        // Lock/Unlock the door from both sides
-        println("Toggling doors for " + keyCap + " & " + getOppositeDirection(keyCap));
-        ROOMS.get(ROOM_CURRENT_INDEX).doors.get(keyCap).toggleLocked();
-        ROOMS.get(ROOMS.get(ROOM_CURRENT_INDEX).warpMap.get(keyCap)).doors.get(getOppositeDirection(keyCap)).toggleLocked();
-      }
-      
-      break;
+void toggleRoom(String keyCap) {
+  println("Setting room status for " + ROOM_CURRENT_INDEX + " & " + ROOMS.get(ROOM_CURRENT_INDEX).warpMap.get(keyCap));
+  
+  if (ROOMS.get(ROOM_CURRENT_INDEX).canToggleDoor(keyCap)) {
+    // Lock/Unlock the door from both sides
+    println("Toggling doors for " + keyCap + " & " + getOppositeDirection(keyCap));
+    ROOMS.get(ROOM_CURRENT_INDEX).doors.get(keyCap).toggleLocked();
+    ROOMS.get(ROOMS.get(ROOM_CURRENT_INDEX).warpMap.get(keyCap)).doors.get(getOppositeDirection(keyCap)).toggleLocked();
   }
-  println(keyCap);
 }
 
 void setup() {
@@ -89,7 +80,7 @@ void setup() {
   swapWarps(4, 0, "E", "W");
   
   for (int r = 0; r < ROOMS.size(); r++) {
-    ROOMS.get(r).setDoors(X_MIN, X_MAX, Y_MIN, Y_MAX);
+    ROOMS.get(r).setDoors(X_MIN, X_MAX, Y_MIN, Y_MAX, DOORS_BUTTON_LENGTH);
   }
   int itemIndex = int(random(ROOMS.size()));
   println("Item is in room " + itemIndex);
@@ -101,6 +92,12 @@ void mousePressed() {
   // Keep the player within a certain border of the room
   if (mouseX > X_MIN && mouseX < X_MAX && mouseY > Y_MIN && mouseY < Y_MAX) {
     PLAYER.setDestination(mouseX, mouseY);
+  } else {
+    for (Map.Entry me: ROOMS.get(ROOM_CURRENT_INDEX).doors.entrySet()) {
+      if (ROOMS.get(ROOM_CURRENT_INDEX).doors.get(me.getKey()).isPressed(mouseX, mouseY)) {
+        toggleRoom(ROOMS.get(ROOM_CURRENT_INDEX).doors.get(me.getKey()).doorKey);
+      }
+    }
   }
   println("You are in room " + ROOM_CURRENT_INDEX);
 }
