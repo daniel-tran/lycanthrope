@@ -5,10 +5,17 @@ int X_MAX = X_MIN;
 int Y_MIN = 50;
 int Y_MAX = Y_MIN;
 int DOORS_BUTTON_LENGTH = 30;
+enum GameState {
+  IN_GAME,
+  STAGE_COMPLETE
+};
+GameState GAME_STATE = GameState.IN_GAME;
+int ITEM_STAGE_COMPLETE = 1;
 
 Player PLAYER;
 ArrayList<Room> ROOMS = new ArrayList<Room>();
-int ROOM_CURRENT_INDEX = 4;
+int ROOM_CURRENT_INDEX;
+ArrayList<Item> ITEMS_COLLECTED = new ArrayList<Item>();
 
 // Returns the direction corresponding to the opposite of the given value
 String getOppositeDirection(String direction) {
@@ -59,12 +66,14 @@ void toggleRoom(String keyCap) {
   }
 }
 
-void setup() {
-  size(960, 540);
-  X_MAX = width - X_MIN;
-  Y_MAX = height - Y_MIN;
+// Restarts the state of various global variables.
+// For ArrayList variables, calling the clear() function should be good enough and hopefully more performant that reinitialisation
+void gameReset() {
   PLAYER = new Player(width / 2, height / 2, 5, 5);
   PLAYER.setTravelBoundaries(X_MIN, X_MAX, Y_MIN, Y_MAX);
+  ITEMS_COLLECTED.clear();
+  ROOM_CURRENT_INDEX = 4;
+  ROOMS.clear();
   ROOMS.add(new Room(6, 1, 3, 2));
   ROOMS.add(new Room(7, 2, 4, 0));
   ROOMS.add(new Room(8, 0, 5, 1));
@@ -84,25 +93,40 @@ void setup() {
   }
   int itemIndex = int(random(ROOMS.size()));
   println("Item is in room " + itemIndex);
-  ROOMS.get(itemIndex).addItem("Cure", X_MIN, X_MAX, Y_MIN, Y_MAX);
+  ROOMS.get(itemIndex).addItem(ITEM_STAGE_COMPLETE, X_MIN, X_MAX, Y_MIN, Y_MAX);
+}
+
+void setup() {
+  size(960, 540);
+  X_MAX = width - X_MIN;
+  Y_MAX = height - Y_MIN;
+  gameReset();
 }
 
 void mousePressed() {
-  println(mouseX + ", " + mouseY);
-  // Keep the player within a certain border of the room
-  if (mouseX > X_MIN && mouseX < X_MAX && mouseY > Y_MIN && mouseY < Y_MAX) {
-    PLAYER.setDestination(mouseX, mouseY);
-  } else {
-    for (Map.Entry me: ROOMS.get(ROOM_CURRENT_INDEX).doors.entrySet()) {
-      if (ROOMS.get(ROOM_CURRENT_INDEX).doors.get(me.getKey()).isPressed(mouseX, mouseY)) {
-        toggleRoom(ROOMS.get(ROOM_CURRENT_INDEX).doors.get(me.getKey()).doorKey);
+  switch(GAME_STATE) {
+    case IN_GAME:
+      println(mouseX + ", " + mouseY);
+      // Keep the player within a certain border of the room
+      if (mouseX > X_MIN && mouseX < X_MAX && mouseY > Y_MIN && mouseY < Y_MAX) {
+        PLAYER.setDestination(mouseX, mouseY);
+      } else {
+        for (Map.Entry me: ROOMS.get(ROOM_CURRENT_INDEX).doors.entrySet()) {
+          if (ROOMS.get(ROOM_CURRENT_INDEX).doors.get(me.getKey()).isPressed(mouseX, mouseY)) {
+            toggleRoom(ROOMS.get(ROOM_CURRENT_INDEX).doors.get(me.getKey()).doorKey);
+          }
+        }
       }
-    }
+      println("You are in room " + ROOM_CURRENT_INDEX);
+      break;
+    case STAGE_COMPLETE:
+      GAME_STATE = GameState.IN_GAME;
+      gameReset();
+      break;
   }
-  println("You are in room " + ROOM_CURRENT_INDEX);
 }
 
-void draw() {
+void mainGameLoop() {
   background(128, 128, 0);
   if (PLAYER.isMoving) {
     PLAYER.doTravel();
@@ -111,7 +135,15 @@ void draw() {
   if (warpKey.length() > 0) {
     ROOM_CURRENT_INDEX = ROOMS.get(ROOM_CURRENT_INDEX).warpMap.get(warpKey);
   } else {
-    PLAYER.detectItems(ROOMS.get(ROOM_CURRENT_INDEX).items);
+    int collectedItemId = PLAYER.detectItems(ROOMS.get(ROOM_CURRENT_INDEX).items);
+    if (collectedItemId > 0) {
+      // Items are positioned as part of the final display once the stage is complete
+      ITEMS_COLLECTED.add(new Item(collectedItemId, X_MIN + (X_MIN * ITEMS_COLLECTED.size()), height / 2));
+      if (collectedItemId == ITEM_STAGE_COMPLETE) {
+        // Stage completes after collecting the necessary item
+        GAME_STATE = GameState.STAGE_COMPLETE;
+      }
+    }
   }
   
   noStroke();
@@ -124,4 +156,30 @@ void draw() {
   stroke(0);
   fill(255);
   circle(PLAYER.x, PLAYER.y, 10);
+}
+
+void stageCompleteLoop() {
+  background(128, 128, 0);
+  fill(255, 255, 255);
+  textSize(64);
+  textAlign(CENTER);
+  text("Stage complete!", width / 2, Y_MIN);
+  
+  for (int i = 0; i < ITEMS_COLLECTED.size(); i++) {
+    ITEMS_COLLECTED.get(i).drawItem();
+  }
+  
+  textSize(32);
+  text("Press the screen for the next stage", width / 2, Y_MAX);
+}
+
+void draw() {
+  switch(GAME_STATE) {
+    case IN_GAME:
+      mainGameLoop();
+      break;
+    case STAGE_COMPLETE:
+      stageCompleteLoop();
+      break;
+  }
 }

@@ -1,13 +1,23 @@
 class Item {
+  int id;
   int x;
   int y;
   String name;
   boolean isCollected = false;
   
-  Item(String itemName, int startX, int startY) {
-    name = itemName;
+  Item(int itemId, int startX, int startY) {
+    id = itemId;
+    name = getNameFromItemId(itemId);
     x = startX;
     y = startY;
+  }
+  
+  // Returns the item's name based on its ID
+  String getNameFromItemId(int itemId) {
+    switch(itemId) {
+      case 1: return "Cure";
+    }
+    return "";
   }
   
   void drawItem() {

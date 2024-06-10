@@ -82,11 +82,13 @@ class Player {
     return "";
   }
   
-  void detectItems(ArrayList<Item> items) {
+  int detectItems(ArrayList<Item> items) {
     for (int i = 0; i < items.size(); i++) {
       if (isNearCoordinate(items.get(i).x, items.get(i).y) && !items.get(i).isCollected) {
         items.get(i).setCollected();
+        return items.get(i).id;
       }
     }
+    return 0;
   }
 }

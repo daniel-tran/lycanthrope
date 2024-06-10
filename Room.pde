@@ -59,9 +59,9 @@ class Room {
     }
   }
   
-  void addItem(String itemName, int xMin, int xMax, int yMin, int yMax) {
-    int itemX = xMin + int(random(xMax));
-    int itemY = yMin + int(random(yMax));
-    items.add(new Item(itemName, itemX, itemY));
+  void addItem(int itemId, int xMin, int xMax, int yMin, int yMax) {
+    int itemX = xMin + int(random(xMax - xMin));
+    int itemY = yMin + int(random(yMax - yMin));
+    items.add(new Item(itemId, itemX, itemY));
   }
 }
