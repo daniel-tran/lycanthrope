@@ -3,12 +3,18 @@ class Room {
   HashMap<String, Door> doors = new HashMap<String, Door>();
   ArrayList<Item> items = new ArrayList<Item>();
   int unlockedDoorsMax = 2;
+  color roomColour;
   
   Room(int roomIndexN, int roomIndexE, int roomIndexS, int roomIndexW) {
     warpMap.put("N", roomIndexN);
     warpMap.put("E", roomIndexE);
     warpMap.put("S", roomIndexS);
     warpMap.put("W", roomIndexW);
+    int[] rgb = new int[3];
+    for (int i = 0; i < rgb.length; i++) {
+      rgb[i] = int(random(256));
+    }
+    roomColour = color(rgb[0], rgb[1], rgb[2]);
   }
   
   // Handles set up of doors in the room
@@ -55,7 +61,7 @@ class Room {
       boolean isPermaLocked = !unlockedDoors.contains(me.getKey()) && unlockedDoors.size() >= unlockedDoorsMax;
       // Select the right icon for the door when it can be interacted with
       PImage lockImg = doors.get(me.getKey()).isLocked ? lockEnabledImg : lockDisabledImg;
-      doors.get(me.getKey()).drawDoor(isPermaLocked, lockImg);
+      doors.get(me.getKey()).drawDoor(isPermaLocked, lockImg, roomColour);
     }
     for (int i = 0; i < items.size(); i++) {
       items.get(i).drawItem();

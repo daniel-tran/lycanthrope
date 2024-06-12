@@ -59,13 +59,13 @@ class Door {
     return abs(coordinateY - buttonY) < (buttonHeight / 2) && abs(coordinateX - buttonX) < (buttonWidth / 2);
   }
   
-  void drawDoor(boolean hasUnlockedMaxDoors, PImage lockImg) {
+  void drawDoor(boolean hasUnlockedMaxDoors, PImage lockImg, color roomColour) {
     if (hasUnlockedMaxDoors) {
       fill(255, 0, 0);
     } else if (!isLocked) {
-      fill(0, 28, 128);
+      fill(roomColour);
     } else {
-      fill(#A57545);
+      fill(0, 28, 128);
     }
     
     rectMode(CENTER);

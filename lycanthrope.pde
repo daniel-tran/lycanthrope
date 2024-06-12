@@ -156,12 +156,13 @@ void mainGameLoop() {
   if (PLAYER.isMoving) {
     PLAYER.doTravel();
   }
-  String warpKey = PLAYER.detectRoomTravel(ROOMS.get(ROOM_CURRENT_INDEX).doors);
+  Room currentRoom = ROOMS.get(ROOM_CURRENT_INDEX);
+  String warpKey = PLAYER.detectRoomTravel(currentRoom.doors);
   if (warpKey.length() > 0) {
-    ROOM_CURRENT_INDEX = ROOMS.get(ROOM_CURRENT_INDEX).warpMap.get(warpKey);
+    ROOM_CURRENT_INDEX = currentRoom.warpMap.get(warpKey);
     GAME_STATS.registerRoomTraverse();
   } else {
-    int collectedItemId = PLAYER.detectItems(ROOMS.get(ROOM_CURRENT_INDEX).items);
+    int collectedItemId = PLAYER.detectItems(currentRoom.items);
     if (collectedItemId >= 0) {
       // Items are positioned as part of the final display once the stage is complete
       ITEMS_COLLECTED.add(new Item(collectedItemId, X_MIN + (X_MIN * ITEMS_COLLECTED.size()), int(height * 0.75)));
@@ -172,13 +173,13 @@ void mainGameLoop() {
     }
   }
   
+  // Draw the area in which the player can move
   noStroke();
   rectMode(CORNERS);
-  fill(0, 28, 128);
+  fill(currentRoom.roomColour);
   rect(X_MIN, Y_MIN, X_MAX, Y_MAX);
-  
   // Pass images into the draw functions to avoid storing them multiple times for each Door class instance
-  ROOMS.get(ROOM_CURRENT_INDEX).drawRoom(GAME_IMAGES.get("LOCK_ENABLED"), GAME_IMAGES.get("LOCK_DISABLED"));
+  currentRoom.drawRoom(GAME_IMAGES.get("LOCK_ENABLED"), GAME_IMAGES.get("LOCK_DISABLED"));
   
   stroke(0);
   fill(255);
