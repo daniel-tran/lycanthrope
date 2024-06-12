@@ -151,8 +151,27 @@ void mousePressed() {
   }
 }
 
-void mainGameLoop() {
+// Draws a simple brick pattern
+void drawBackground() {
   background(#C7A07A);
+  
+  int brickHeight = 5;
+  int brickWidth = 10;
+  for (int y = 0; y < height; y += brickHeight) {
+    boolean isEvenRow = y % 2 == 0;
+    line(0, y, width, y);
+    
+    int x = isEvenRow ? int(brickWidth * 0.5) : 0;
+    for (; x < width; x += brickWidth) {
+      line(x, y, x, y + brickHeight);
+    }
+  }
+}
+
+void mainGameLoop() {
+  // In reality, the walls encompass everything but objects are drawn on top to
+  // make it look like a bordered room.
+  drawBackground();
   if (PLAYER.isMoving) {
     PLAYER.doTravel();
   }

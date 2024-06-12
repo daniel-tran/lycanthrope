@@ -59,24 +59,51 @@ class Door {
     return abs(coordinateY - buttonY) < (buttonHeight / 2) && abs(coordinateX - buttonX) < (buttonWidth / 2);
   }
   
-  void drawDoor(boolean hasUnlockedMaxDoors, PImage lockImg, color roomColour) {
-    if (hasUnlockedMaxDoors) {
-      fill(255, 0, 0);
-    } else if (!isLocked) {
-      fill(roomColour);
-    } else {
-      fill(0, 28, 128);
-    }
+  // Draws a metal square with some basic shading
+  void drawLockedSquare(int x, int y, color brightest, color surface, color darkest) {
+    float doorWidthFactor = 0.8;
+    float doorHeightFactor = 0.8;
+    float doorWidthRadius = doorWidth / 2;
+    float doorHeightRadius = doorHeight / 2;
     
+    // Draw the brightest and darkest parts first, since they will have other items drawn on top
+    stroke(darkest);
+    fill(darkest);
+    triangle(x + doorWidthRadius, y - doorHeightRadius, x + doorWidthRadius, y + doorHeightRadius, x - doorWidthRadius, y + doorHeightRadius);
+    fill(brightest);
+    triangle(x - doorWidthRadius, y - doorHeightRadius, x + doorWidthRadius, y - doorHeightRadius, x - doorWidthRadius, y + doorHeightRadius);
+    
+    // Draw line to divide the second diagonal of the square (first diagonal is essentially drawn for free)
+    line(x - doorWidthRadius, y - doorHeightRadius, x + doorWidthRadius, y + doorHeightRadius);
+    
+    // Draw the surface face
     rectMode(CENTER);
-    noStroke();
+    fill(surface);
+    rect(x, y, doorWidth * doorWidthFactor, doorHeight * doorHeightFactor);
+  }
+  
+  void drawDoor(boolean hasUnlockedMaxDoors, PImage lockImg, color roomColour) {
     // Use an offset for x,y coordinates only during drawing to allow it to be drawn
     // outside of the valid room space but still allow players to access them when unlocked.
-    rect(x + offsetX, y + offsetY, doorWidth, doorHeight);
+    int xWithOffset = x + offsetX;
+    int yWithOffset = y + offsetY;
+    
+    if (hasUnlockedMaxDoors) {
+      drawLockedSquare(xWithOffset, yWithOffset, #DE9294, #B8383B, #803020);
+    } else if (!isLocked) {
+      fill(roomColour);
+      rectMode(CENTER);
+      noStroke();
+      rect(xWithOffset, yWithOffset, doorWidth, doorHeight);
+    } else {
+      drawLockedSquare(xWithOffset, yWithOffset, #FFFFFF, #C3C3C3, #7F7F7F);
+    }
     
     if (!hasUnlockedMaxDoors) {
+      float centreOffsetX = offsetX * 0.25;
+      float centreOffsetY = offsetY * 0.25;
       imageMode(CENTER);
-      image(lockImg, buttonX, buttonY, buttonWidth, buttonHeight);
+      image(lockImg, buttonX - centreOffsetX, buttonY - centreOffsetY, buttonWidth, buttonHeight);
     }
   }
 }
