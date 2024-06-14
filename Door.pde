@@ -56,7 +56,9 @@ class Door {
   
   // Returns whether the door's button is pressed at a given coordinate
   boolean isPressed(int coordinateX, int coordinateY) {
-    return abs(coordinateY - buttonY) < (buttonHeight / 2) && abs(coordinateX - buttonX) < (buttonWidth / 2);
+    int xWithOffset = x + offsetX;
+    int yWithOffset = y + offsetY;
+    return abs(coordinateY - yWithOffset) < (buttonHeight) && abs(coordinateX - xWithOffset) < (buttonWidth);
   }
   
   // Draws a metal square with some basic shading
