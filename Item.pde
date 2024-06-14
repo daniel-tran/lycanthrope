@@ -6,7 +6,7 @@ class Item {
   // Items are OK to store image data since most items will use dedicated sprites
   // though it's worth keeping an eye on this if duplicate items are supported.
   PImage sprite;
-  int spriteWidth = 24;
+  int spriteWidth = 36;
   int spriteHeight = spriteWidth;
   boolean isCollected = false;
   
