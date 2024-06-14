@@ -154,6 +154,7 @@ void mousePressed() {
 // Draws a simple brick pattern
 void drawBackground() {
   background(#C7A07A);
+  stroke(#000000);
   
   int brickHeight = 5;
   int brickWidth = 10;
@@ -199,10 +200,8 @@ void mainGameLoop() {
   rect(X_MIN, Y_MIN, X_MAX, Y_MAX);
   // Pass images into the draw functions to avoid storing them multiple times for each Door class instance
   currentRoom.drawRoom(GAME_IMAGES.get("LOCK_ENABLED"), GAME_IMAGES.get("LOCK_DISABLED"));
-  
-  stroke(0);
-  fill(255);
-  circle(PLAYER.x, PLAYER.y, 10);
+
+  PLAYER.drawPlayer();
 }
 
 void stageCompleteLoop() {

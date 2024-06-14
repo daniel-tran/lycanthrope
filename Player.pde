@@ -10,18 +10,32 @@ class Player {
   int yMin;
   int xMax;
   int yMax;
+  int xFlipScale = 1; // 1 = right, -1 = left
+  PImage icon;
+  int iconWidth = 48;
+  int iconHeight = iconWidth;
   
   Player(int startX, int startY, int stepSizeX, int stepSizeY) {
     x = startX;
     y = startY;
     stepX = stepSizeX;
     stepY = stepSizeY;
+    icon = loadImage("images/IconPlayer1.png");
+  }
+  
+  void drawPlayer() {
+    imageMode(CENTER);
+    pushMatrix();
+    scale(xFlipScale, 1);
+    image(icon, x * xFlipScale, y, iconWidth, iconHeight);
+    popMatrix();
   }
   
   // Sets the go-to coordinates
-  void setDestination(int x, int y) {
-    xGoTo = x;
-    yGoTo = y;
+  void setDestination(int newX, int newY) {
+    xFlipScale = (newX < x) ? -1 : 1;
+    xGoTo = newX;
+    yGoTo = newY;
     isMoving = true;
   }
   
@@ -63,7 +77,7 @@ class Player {
   
   // Returns whether the player is within step distance to a given coordinate
   boolean isNearCoordinate(int coordinateX, int coordinateY) {
-    return abs(coordinateY - y) < (stepY * 2) && abs(coordinateX - x) < (stepX * 2);
+    return abs(coordinateY - y) < (iconHeight / 2) && abs(coordinateX - x) < (iconWidth / 2);
   }
   
   // Returns the direction of the room where the player can travel to another room.
