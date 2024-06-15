@@ -76,18 +76,33 @@ void gameReset() {
   PLAYER.setTravelBoundaries(X_MIN, X_MAX, Y_MIN, Y_MAX);
   ITEMS_COLLECTED.clear();
   ROOMS.clear();
-  ROOMS.add(new Room(6, 1, 3, 2));
-  ROOMS.add(new Room(7, 2, 4, 0));
-  ROOMS.add(new Room(8, 0, 5, 1));
   
-  ROOMS.add(new Room(0, 4, 6, 5));
-  ROOMS.add(new Room(1, 5, 7, 3));
-  ROOMS.add(new Room(2, 3, 8, 4));
-  
-  ROOMS.add(new Room(3, 7, 0, 8));
-  ROOMS.add(new Room(4, 8, 1, 6));
-  ROOMS.add(new Room(5, 6, 2, 7));
-  
+  // Generate a new set of rooms, conceptualised into a grid.
+  int roomWidth = 3;
+  int roomHeight = roomWidth;
+  int totalRooms = roomWidth * roomHeight;
+  for (int col = 0; col < roomWidth; col++) {
+    for (int row = 0; row < roomHeight; row++) {
+      int rowCurrent = row * roomWidth;
+      int roomCurrent = rowCurrent + col;
+      // Up and down are determined by taking the current room and adding or subtracting
+      // an entre row's worth of rooms. The value also needs to be added to totalRooms
+      // and then to reduce modulo totalRooms to ensure the value rolls around correctly
+      // if the room is on the top or bottom of the grid.
+      int up = (totalRooms + (roomCurrent - roomWidth)) % totalRooms;
+      int down = (totalRooms + (roomCurrent + roomWidth)) % totalRooms;
+      // Left and right are determined by taking the current row and adding a factor of
+      // the row as some calculation of the column index +/- 1. The value also needs to be
+      // added to roomWidth and then to reduce modulo roomWidth to ensure the value rolls
+      // around correctly if the room if on the leftmost or rightmost side of the grid.
+      int left = rowCurrent + ((roomWidth + (col - 1)) % roomWidth);
+      int right = rowCurrent + ((roomWidth + (col + 1)) % roomWidth);
+      println("Room " + roomCurrent + ", Up: " + up + ", Right: " + right + ", Down: " + down + ", Left: " + left);
+      
+      ROOMS.add(new Room(up, right, down, left));
+    }
+  }
+
   ROOM_CURRENT_INDEX = int(random(ROOMS.size()));
   for (int r = 0; r < ROOMS.size(); r++) {
     ROOMS.get(r).setDoors(X_MIN, X_MAX, Y_MIN, Y_MAX, DOORS_BUTTON_LENGTH);
