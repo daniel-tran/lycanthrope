@@ -123,11 +123,25 @@ void gameReset() {
     }
   }
   
-  for (int i = ITEM_STAGE_COMPLETE; i < ITEMS_COUNT; i++) {
+  // Randomise items among each room, excluding the stage completion item
+  for (int i = ITEM_STAGE_COMPLETE + 1; i < ITEMS_COUNT; i++) {
     int roomIndex = int(random(ROOMS.size()));
     println("Item is in room " + roomIndex);
     ROOMS.get(roomIndex).addItem(i, X_MIN, X_MAX, Y_MIN, Y_MAX);
   }
+  
+  // Due to the way rooms are currently randomised, it's possible for rooms to connect in such
+  // a way that some rooms cannot be accessed. As such, the stage completion item is determined
+  // through a simulated play of the maze and placed in whatever the last room reached was.
+  // This should (hopefully) guarantee that each generated maze iscan be solved.
+  int itemStageCompleteIndex = ROOM_CURRENT_INDEX;
+  String[] directions = new String[]{ "N", "E", "S", "W" };
+  for (int r = 0; r < ROOMS.size(); r++) {
+    int doorIndex = int(random(directions.length));
+    itemStageCompleteIndex = ROOMS.get(itemStageCompleteIndex).warpMap.get(directions[doorIndex]);
+  }
+  ROOMS.get(itemStageCompleteIndex).addItem(ITEM_STAGE_COMPLETE, X_MIN, X_MAX, Y_MIN, Y_MAX);
+  println("Cure is in room " + itemStageCompleteIndex);
 }
 
 void setup() {
