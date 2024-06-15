@@ -12,6 +12,9 @@ enum GameState {
 GameState GAME_STATE = GameState.IN_GAME;
 int ITEM_STAGE_COMPLETE = 0;
 int ITEMS_COUNT = 5;
+int STAGE_COMPLETE_ITEMS_X = 450;
+int STAGE_COMPLETE_ITEMS_Y = 150;
+int STAGE_COMPLETE_ITEMS_ROW = 9;
 
 Player PLAYER;
 ArrayList<Room> ROOMS = new ArrayList<Room>();
@@ -200,7 +203,10 @@ void mainGameLoop() {
     int collectedItemId = PLAYER.detectItems(currentRoom.items);
     if (collectedItemId >= 0) {
       // Items are positioned as part of the final display once the stage is complete
-      ITEMS_COLLECTED.add(new Item(collectedItemId, X_MIN + (X_MIN * ITEMS_COLLECTED.size()), int(height * 0.75)));
+      // They are shown from left to right and shift to the next row once the row is full
+      int itemX = STAGE_COMPLETE_ITEMS_X + (X_MIN * (ITEMS_COLLECTED.size() % STAGE_COMPLETE_ITEMS_ROW ));
+      int itemY = STAGE_COMPLETE_ITEMS_Y + (Y_MIN * (ITEMS_COLLECTED.size() / STAGE_COMPLETE_ITEMS_ROW ));
+      ITEMS_COLLECTED.add(new Item(collectedItemId, itemX, itemY));
       if (collectedItemId == ITEM_STAGE_COMPLETE) {
         // Stage completes after collecting the necessary item
         GAME_STATE = GameState.STAGE_COMPLETE;
