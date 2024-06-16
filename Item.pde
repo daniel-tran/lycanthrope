@@ -19,26 +19,22 @@ class Item {
   // Sets various class members based on its ID (including the id property itself)
   void setPropertiesFromItemId(int itemId) {
     id = itemId;
+    sprite = loadImage("images/Item" + itemId +".png");
     switch(itemId) {
       case 0:
         name = "Cure";
-        sprite = loadImage("images/Item" + name +".png");
         break;
       case 1:
         name = "Fish";
-        sprite = loadImage("images/Item" + name +".png");
         break;
       case 2:
         name = "Homsar's Hat";
-        sprite = loadImage("images/ItemHomsarsHat.png");
         break;
       case 3:
         name = "Bear Plush";
-        sprite = loadImage("images/ItemBear.png");
         break;
       case 4:
         name = "Bread";
-        sprite = loadImage("images/Item" + name +".png");
         break;
     }
   }
