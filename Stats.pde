@@ -4,9 +4,12 @@ class Stats {
   int doorsUnlocked;
   int doorsLocked;
   int roomsTraversed;
+  int itemsRemaining;
+  int itemsCollected;
   
   Stats() {
     stage = 1;
+    itemsRemaining = 50;
     reset();
   }
   
@@ -16,6 +19,7 @@ class Stats {
     doorsUnlocked = 0;
     doorsLocked = 0;
     roomsTraversed = 0;
+    itemsCollected = 0;
   }
   
   // Returns the game statistics as a list of strings summarising each metric.
@@ -23,6 +27,7 @@ class Stats {
     // To avoid having to recalculate these values all the time, it is only done
     // once since the game isn't being played while on the stage completion screen.
     if (results.size() <= 0) {
+      results.add("Items required: " + itemsRemaining + " (-" + itemsCollected + ")");
       results.add("Doors unlocked: " + doorsUnlocked);
       results.add("Doors locked: " + doorsLocked);
       results.add("Rooms traversed: " + roomsTraversed);
@@ -34,6 +39,15 @@ class Stats {
   void increaseStageAndReset() {
     stage++;
     reset();
+  }
+  
+  void registerItemsCollected(int itemCount) {
+    itemsCollected = itemCount;
+    itemsRemaining = max(itemsRemaining - itemCount, 0);
+  }
+  
+  boolean obtainedAllItems() {
+    return itemsRemaining <= 0;
   }
   
   // The below functions handle the incrementing of various game statistics

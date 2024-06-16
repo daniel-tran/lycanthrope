@@ -7,7 +7,8 @@ int Y_MAX = Y_MIN;
 int DOORS_BUTTON_LENGTH = 30;
 enum GameState {
   IN_GAME,
-  STAGE_COMPLETE
+  STAGE_COMPLETE,
+  GAME_WIN,
 };
 GameState GAME_STATE = GameState.IN_GAME;
 int ITEM_STAGE_COMPLETE = 0;
@@ -176,10 +177,15 @@ void mousePressed() {
       println("You are in room " + ROOM_CURRENT_INDEX);
       break;
     case STAGE_COMPLETE:
-      GAME_STATE = GameState.IN_GAME;
-      GAME_STATS.increaseStageAndReset();
-      gameReset();
+      if (GAME_STATS.obtainedAllItems()) {
+        GAME_STATE = GameState.GAME_WIN;
+      } else {
+        GAME_STATE = GameState.IN_GAME;
+        GAME_STATS.increaseStageAndReset();
+        gameReset();
+      }
       break;
+    case GAME_WIN: break;
   }
 }
 
@@ -223,6 +229,7 @@ void mainGameLoop() {
       ITEMS_COLLECTED.add(new Item(collectedItemId, itemX, itemY));
       if (collectedItemId == ITEM_STAGE_COMPLETE) {
         // Stage completes after collecting the necessary item
+        GAME_STATS.registerItemsCollected(ITEMS_COLLECTED.size());
         GAME_STATE = GameState.STAGE_COMPLETE;
       }
     }
@@ -265,6 +272,13 @@ void stageCompleteLoop() {
   text("Press the screen for the next stage", width / 2, Y_MAX);
 }
 
+void winGameLoop() {
+  background(128, 128, 0);
+  textSize(64);
+  textAlign(CENTER);
+  text("You're winner!", width / 2, Y_MIN);
+}
+
 void draw() {
   switch(GAME_STATE) {
     case IN_GAME:
@@ -272,6 +286,9 @@ void draw() {
       break;
     case STAGE_COMPLETE:
       stageCompleteLoop();
+      break;
+    case GAME_WIN:
+      winGameLoop();
       break;
   }
 }
