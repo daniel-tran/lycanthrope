@@ -12,7 +12,7 @@ class Player {
   int yMax;
   int xFlipScale = 1; // 1 = right, -1 = left
   PImage icon;
-  int iconWidth = 48;
+  int iconWidth = 64;
   int iconHeight = iconWidth;
   
   Player(int startX, int startY, int stepSizeX, int stepSizeY) {
