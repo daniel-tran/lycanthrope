@@ -9,6 +9,7 @@ enum GameState {
   IN_GAME,
   STAGE_COMPLETE,
   GAME_WIN,
+  GAME_LOSE,
 };
 GameState GAME_STATE = GameState.IN_GAME;
 int ITEM_STAGE_COMPLETE = 0;
@@ -16,6 +17,8 @@ int ITEMS_COUNT = 5;
 int STAGE_COMPLETE_ITEMS_X = 450;
 int STAGE_COMPLETE_ITEMS_Y = 150;
 int STAGE_COMPLETE_ITEMS_ROW = 9;
+int STAGE_MAX = 9;
+int MOON_MAX = 8;
 
 Player PLAYER;
 ArrayList<Room> ROOMS = new ArrayList<Room>();
@@ -152,6 +155,13 @@ void setup() {
   GAME_IMAGES.put("LOCK_DISABLED", loadImage("images/LockDisabled.png"));
   GAME_IMAGES.put("LOCK_ENABLED", loadImage("images/LockEnabled.png"));
   GAME_IMAGES.put("CURE", loadImage("images/Cure.png"));
+  GAME_IMAGES.put("GAME_OVER", loadImage("GameOver.png"));
+  for (int i = 0; i < 10; i++) {
+    // First level is a tutorial and doesn't count as a proper level, per se.
+    // As such, the moon state only increments after the second level.
+    int moonIndex = i == 0 ? 0 : (i- 1);
+    GAME_IMAGES.put("MOON" + moonIndex, loadImage("images/Moon" + moonIndex + ".png"));
+  }
   gameReset();
 }
 
@@ -180,13 +190,17 @@ void mousePressed() {
     case STAGE_COMPLETE:
       if (GAME_STATS.obtainedAllItems()) {
         GAME_STATE = GameState.GAME_WIN;
+      } else if (GAME_STATS.stage >= STAGE_MAX) {
+        GAME_STATE = GameState.GAME_LOSE;
       } else {
         GAME_STATE = GameState.IN_GAME;
         GAME_STATS.increaseStageAndReset();
         gameReset();
       }
       break;
-    case GAME_WIN: break;
+    case GAME_WIN:
+    case GAME_LOSE:
+      break;
   }
 }
 
@@ -271,6 +285,10 @@ void stageCompleteLoop() {
   textSize(32);
   textAlign(CENTER);
   text("Press the screen for the next stage", width / 2, Y_MAX);
+  
+  imageMode(CENTER);
+  int moonImageIndex = min(GAME_STATS.stage - 1, MOON_MAX);
+  image(GAME_IMAGES.get("MOON" + moonImageIndex), width * 0.3, height * 0.7, 60, 60);
 }
 
 void winGameLoop() {
@@ -302,6 +320,17 @@ void winGameLoop() {
   image(GAME_IMAGES.get("CURE"), width * 0.85, height * 0.55, 256, 256);
 }
 
+void loseGameLoop() {
+  imageMode(CENTER);
+  PImage img = GAME_IMAGES.get("GAME_OVER");
+  image(img, width / 2, height  / 2, img.width * 2, img.height * 2);
+  
+  fill(255, 255, 255);
+  textSize(64);
+  textAlign(CENTER);
+  text("Quest failed!", width / 2, height - Y_MIN);
+}
+
 void draw() {
   switch(GAME_STATE) {
     case IN_GAME:
@@ -312,6 +341,9 @@ void draw() {
       break;
     case GAME_WIN:
       winGameLoop();
+      break;
+    case GAME_LOSE:
+      loseGameLoop();
       break;
   }
 }

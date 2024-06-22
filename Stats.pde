@@ -31,6 +31,8 @@ class Stats {
       results.add("Doors unlocked: " + doorsUnlocked);
       results.add("Doors locked: " + doorsLocked);
       results.add("Rooms traversed: " + roomsTraversed);
+      results.add("");
+      results.add("Moon status: ");
     }
     return results;
   }
