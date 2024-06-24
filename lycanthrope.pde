@@ -38,6 +38,21 @@ String getOppositeDirection(String direction) {
   return "";
 }
 
+// Returns the number of itms in the stage based on the stage number
+int getItemsCount(int stage) {
+  switch (stage) {
+    case 1: return 1;
+    case 2: return 4;
+    case 3: return 8;
+    case 4: return 12;
+    case 5: return 16;
+    case 6: return 24;
+    case 7: return 32;
+    case 8: return 40;
+    default: return 45;
+  }
+}
+
 // Swaps the room indexes for 2 specified rooms in a given direction per room.
 // This will also implicitly swap the room indexes for whatever rooms are currently being connected by these rooms in the specified directions.
 // For visual clarity, suppose this is a sample of the current warp mapping of some rooms:
@@ -85,7 +100,7 @@ void gameReset() {
   ROOMS.clear();
   
   // Generate a new set of rooms, conceptualised into a grid.
-  int roomWidth = 3;
+  int roomWidth = (GAME_STATS.stage + 1);
   int roomHeight = roomWidth;
   int totalRooms = roomWidth * roomHeight;
   for (int col = 0; col < roomWidth; col++) {
@@ -128,7 +143,7 @@ void gameReset() {
   }
   
   // Randomise items among each room, excluding the stage completion item
-  for (int i = ITEM_STAGE_COMPLETE + 1; i < ITEMS_COUNT; i++) {
+  for (int i = ITEM_STAGE_COMPLETE + 1; i < getItemsCount(GAME_STATS.stage); i++) {
     int roomIndex = int(random(ROOMS.size()));
     println("Item is in room " + roomIndex);
     ROOMS.get(roomIndex).addItem(i, X_MIN, X_MAX, Y_MIN, Y_MAX);

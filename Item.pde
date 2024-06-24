@@ -19,7 +19,8 @@ class Item {
   // Sets various class members based on its ID (including the id property itself)
   void setPropertiesFromItemId(int itemId) {
     id = itemId;
-    sprite = loadImage("images/Item" + itemId +".png");
+    // For now, just reuse the bread item when all the others have been spawned once
+    sprite = loadImage("images/Item" + min(itemId, 4) +".png");
     switch(itemId) {
       case 0:
         name = "Cure";
