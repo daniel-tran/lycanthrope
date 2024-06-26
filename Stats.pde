@@ -52,6 +52,10 @@ class Stats {
     return itemsRemaining <= 0;
   }
   
+  boolean isFirstStage() {
+    return stage == 1;
+  }
+  
   // The below functions handle the incrementing of various game statistics
   
   void registerDoorUnlock() {

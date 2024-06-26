@@ -4,6 +4,7 @@ class Room {
   ArrayList<Item> items = new ArrayList<Item>();
   int unlockedDoorsMax = 2;
   color roomColour;
+  String roomText = "";
   
   Room(int roomIndexN, int roomIndexE, int roomIndexS, int roomIndexW) {
     warpMap.put("N", roomIndexN);
@@ -56,6 +57,7 @@ class Room {
   }
   
   void drawRoom(PImage lockDisabledImg, PImage lockEnabledImg) {
+    drawText();
     ArrayList<String> unlockedDoors = getDoors(false);
     for (Map.Entry me: doors.entrySet()) {
       boolean isPermaLocked = !unlockedDoors.contains(me.getKey()) && unlockedDoors.size() >= unlockedDoorsMax;
@@ -72,5 +74,19 @@ class Room {
     int itemX = xMin + int(random(xMax - xMin));
     int itemY = yMin + int(random(yMax - yMin));
     items.add(new Item(itemId, itemX, itemY));
+  }
+  
+  void addRoomText(String text) {
+    // The text is appended to support multiple messages in a room
+    roomText += text + "\n";
+  }
+  
+  void drawText() {
+    if (roomText.length() > 0) {
+      fill(255, 255, 255);
+      textSize(32);
+      textAlign(CENTER, CENTER);
+      text(roomText, width / 2, height / 2);
+    }
   }
 }

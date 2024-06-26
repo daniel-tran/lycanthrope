@@ -161,6 +161,17 @@ void gameReset() {
   }
   ROOMS.get(itemStageCompleteIndex).addItem(ITEM_STAGE_COMPLETE, X_MIN, X_MAX, Y_MIN, Y_MAX);
   println("Cure is in room " + itemStageCompleteIndex);
+  
+  if (GAME_STATS.isFirstStage()) {
+    // Add tutorial text to various rooms for the first stage only
+    String[] textTutorial = new String[]{
+      "Press anywhere in the room to move to that location",
+      "You can press on the doors to open and close them",
+      "Closed doors will auto-lock if there are too many open"
+    };
+    ROOMS.get(ROOM_CURRENT_INDEX).addRoomText(String.join("\n", textTutorial));
+    ROOMS.get(itemStageCompleteIndex).addRoomText("Get the serum & other items before it's full moon!");
+  }
 }
 
 void setup() {
