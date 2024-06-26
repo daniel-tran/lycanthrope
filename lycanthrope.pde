@@ -286,11 +286,14 @@ void mainGameLoop() {
 }
 
 void stageCompleteLoop() {
-  background(128, 128, 0);
+  // Background darkens as the stages progress for that "full moon in the night" effect
+  float darkFactor = float(MOON_MAX - GAME_STATS.stage) / MOON_MAX;
+  background(63 * darkFactor, 72 * darkFactor, 204 * darkFactor);
+  
   fill(255, 255, 255);
   textSize(64);
   textAlign(CENTER);
-  text("Stage "+ GAME_STATS.stage + " complete!", width / 2, Y_MIN);
+  text("STAGE "+ GAME_STATS.stage + " COMPLETE!", width / 2, Y_MIN);
   
   textSize(32);
   textAlign(LEFT);
