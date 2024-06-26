@@ -172,10 +172,7 @@ void setup() {
   GAME_IMAGES.put("CURE", loadImage("images/Cure.png"));
   GAME_IMAGES.put("GAME_OVER", loadImage("GameOver.png"));
   for (int i = 0; i < 10; i++) {
-    // First level is a tutorial and doesn't count as a proper level, per se.
-    // As such, the moon state only increments after the second level.
-    int moonIndex = i == 0 ? 0 : (i- 1);
-    GAME_IMAGES.put("MOON" + moonIndex, loadImage("images/Moon" + moonIndex + ".png"));
+    GAME_IMAGES.put("MOON" + i, loadImage("images/Moon" + i + ".png"));
   }
   gameReset();
 }
