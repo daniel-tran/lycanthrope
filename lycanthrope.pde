@@ -165,6 +165,7 @@ void gameReset() {
 
 void setup() {
   size(960, 540);
+  textFont(createFont("GOTHICB.TTF", 32));
   X_MAX = width - X_MIN;
   Y_MAX = height - Y_MIN;
   GAME_IMAGES.put("LOCK_DISABLED", loadImage("images/LockDisabled.png"));
