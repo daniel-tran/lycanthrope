@@ -382,20 +382,17 @@ void winGameLoop() {
   
   textSize(32);
   textAlign(LEFT);
-  String[] messageList = new String[]{
-    "After cobbling together all these random items of",
-    "mystical origin, you've somehow conjured up a",
-    "cure for your lycanthropy...",
-    "",
-    "Wait, it might have been leprosy. Or listeriosis?",
-    "Dang. You probably found a cure to the wrong",
-    "illness. Or maybe the journey was the real cure all",
-    "along? Hmm... nope, definitely the wrong cure."
-  };
-  int statsY = int(height * 0.25);
-  for (int s = 0; s < messageList.length; s++) {
-    text(messageList[s], X_MIN, statsY + (UNIT_Y * s));
-  }
+  text("""
+After cobbling together all these random items of
+mystical origin, you've somehow conjured up a
+cure for your lycanthropy...
+
+Wait, it might have been leprosy. Or listeriosis?
+Dang. You probably made a cure for the wrong
+illness. Or maybe the journey was the real cure all
+along? Hmm... nope, definitely the wrong cure.
+  """,
+  UNIT_X, UNIT_Y * 2);
   
   imageMode(CENTER);
   image(GAME_IMAGES.get("CURE"), width * 0.9, height * 0.5, 256, 256);
