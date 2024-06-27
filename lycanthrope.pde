@@ -6,12 +6,13 @@ int Y_MIN = 50;
 int Y_MAX = Y_MIN;
 int DOORS_BUTTON_LENGTH = 30;
 enum GameState {
+  INTRO,
   IN_GAME,
   STAGE_COMPLETE,
   GAME_WIN,
   GAME_LOSE,
 };
-GameState GAME_STATE = GameState.IN_GAME;
+GameState GAME_STATE = GameState.INTRO;
 int ITEM_STAGE_COMPLETE = 0;
 int ITEMS_COUNT = 5;
 int STAGE_COMPLETE_ITEMS_X = 450;
@@ -191,6 +192,9 @@ void setup() {
 
 void mousePressed() {
   switch(GAME_STATE) {
+    case INTRO:
+      GAME_STATE = GameState.IN_GAME;
+      break;
     case IN_GAME:
       println(mouseX + ", " + mouseY);
       // Keep the player within a certain border of the room
@@ -244,6 +248,24 @@ void drawBackground() {
       line(x, y, x, y + brickHeight);
     }
   }
+}
+
+void introGameLoop() {
+  background(0);
+  
+  fill(255, 255, 255);
+  textSize(32);
+  textAlign(CENTER, CENTER);
+  text("""
+Waking up one afternoon, you feel absolutely abysmal.
+Being the knowledgeable druid you are, you figure it's
+probably lycanthropy.
+You'd better make a cure soon, especially since your
+health insurance policy most definitely won't cover this.
+
+Press anywhere on the screen to continue.
+  """,
+  width / 2, height / 2);
 }
 
 void mainGameLoop() {
@@ -360,6 +382,9 @@ void loseGameLoop() {
 
 void draw() {
   switch(GAME_STATE) {
+    case INTRO:
+      introGameLoop();
+      break;
     case IN_GAME:
       mainGameLoop();
       break;
