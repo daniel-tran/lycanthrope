@@ -1,5 +1,7 @@
 import java.util.Map;
 
+int UNIT_X;
+int UNIT_Y;
 int X_MIN = 50;
 int X_MAX = X_MIN;
 int Y_MIN = 50;
@@ -178,6 +180,8 @@ void gameReset() {
 void setup() {
   size(960, 540);
   textFont(createFont("GOTHICB.TTF", 32));
+  UNIT_X = 50;
+  UNIT_Y = UNIT_X;
   X_MAX = width - X_MIN;
   Y_MAX = height - Y_MIN;
   GAME_IMAGES.put("LOCK_DISABLED", loadImage("images/LockDisabled.png"));
@@ -291,8 +295,8 @@ void mainGameLoop() {
     if (collectedItemId >= 0) {
       // Items are positioned as part of the final display once the stage is complete
       // They are shown from left to right and shift to the next row once the row is full
-      int itemX = STAGE_COMPLETE_ITEMS_X + (X_MIN * (ITEMS_COLLECTED.size() % STAGE_COMPLETE_ITEMS_ROW ));
-      int itemY = STAGE_COMPLETE_ITEMS_Y + (Y_MIN * (ITEMS_COLLECTED.size() / STAGE_COMPLETE_ITEMS_ROW ));
+      int itemX = STAGE_COMPLETE_ITEMS_X + (UNIT_X * (ITEMS_COLLECTED.size() % STAGE_COMPLETE_ITEMS_ROW ));
+      int itemY = STAGE_COMPLETE_ITEMS_Y + (UNIT_Y * (ITEMS_COLLECTED.size() / STAGE_COMPLETE_ITEMS_ROW ));
       ITEMS_COLLECTED.add(new Item(collectedItemId, itemX, itemY));
       if (collectedItemId == ITEM_STAGE_COMPLETE) {
         // Stage completes after collecting the necessary item
@@ -319,15 +323,14 @@ void stageCompleteLoop() {
   fill(255, 255, 255);
   textSize(64);
   textAlign(CENTER);
-  text("STAGE "+ GAME_STATS.stage + " COMPLETE!", width / 2, Y_MIN);
+  text("STAGE "+ GAME_STATS.stage + " COMPLETE!", width / 2, UNIT_Y);
   
   textSize(32);
   textAlign(LEFT);
   ArrayList<String> statsList = GAME_STATS.getStatsList();
   int statsY = int(height * 0.25);
-  int statsYInc = Y_MIN;
   for (int s = 0; s < statsList.size(); s++) {
-    text(statsList.get(s), X_MIN, statsY + (statsYInc * s));
+    text(statsList.get(s), X_MIN, statsY + (UNIT_Y * s));
   }
   
   for (int i = 0; i < ITEMS_COLLECTED.size(); i++) {
@@ -350,7 +353,7 @@ void winGameLoop() {
   fill(255, 255, 255);
   textSize(64);
   textAlign(CENTER);
-  text("The cure is complete!", width / 2, Y_MIN);
+  text("The cure is complete!", width / 2, UNIT_Y);
   
   textSize(32);
   textAlign(LEFT);
@@ -365,9 +368,8 @@ void winGameLoop() {
     "along? Hmm... nope, definitely the wrong cure."
   };
   int statsY = int(height * 0.25);
-  int statsYInc = Y_MIN;
   for (int s = 0; s < messageList.length; s++) {
-    text(messageList[s], X_MIN, statsY + (statsYInc * s));
+    text(messageList[s], X_MIN, statsY + (UNIT_Y * s));
   }
   
   imageMode(CENTER);
@@ -382,7 +384,7 @@ void loseGameLoop() {
   fill(255, 255, 255);
   textSize(64);
   textAlign(CENTER);
-  text("Quest failed!", width / 2, height - Y_MIN);
+  text("Quest failed!", width / 2, height - UNIT_Y);
 }
 
 void draw() {
