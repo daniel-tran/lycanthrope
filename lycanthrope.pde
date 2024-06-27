@@ -371,7 +371,7 @@ void winGameLoop() {
   }
   
   imageMode(CENTER);
-  image(GAME_IMAGES.get("CURE"), width * 0.85, height * 0.55, 256, 256);
+  image(GAME_IMAGES.get("CURE"), width * 0.9, height * 0.5, 256, 256);
 }
 
 void loseGameLoop() {
