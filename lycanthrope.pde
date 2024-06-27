@@ -6,6 +6,7 @@ int X_MIN = 50;
 int X_MAX = X_MIN;
 int Y_MIN = 50;
 int Y_MAX = Y_MIN;
+int Y_STAGE_COMPLETE;
 int DOORS_BUTTON_LENGTH = 30;
 enum GameState {
   INTRO,
@@ -101,6 +102,7 @@ void gameReset() {
   PLAYER.setTravelBoundaries(X_MIN, X_MAX, Y_MIN, Y_MAX);
   ITEMS_COLLECTED.clear();
   ROOMS.clear();
+  Y_STAGE_COMPLETE = 0;
   
   // Generate a new set of rooms, conceptualised into a grid.
   int roomWidth = (GAME_STATS.stage + 1);
@@ -254,10 +256,30 @@ void drawBackground() {
   }
 }
 
-void drawBackgroundNight() {
+// Returns a boolean value indicating whether the intermediate animation has completed
+boolean drawBackgroundNight() {
   // Background darkens as the stages progress for that "full moon in the night" effect
   float darkFactor = float(MOON_MAX - GAME_STATS.stage) / MOON_MAX;
-  background(63 * darkFactor, 72 * darkFactor, 204 * darkFactor);
+  color backgroundColour = color(63 * darkFactor, 72 * darkFactor, 204 * darkFactor);
+
+  if (GAME_STATE == GameState.STAGE_COMPLETE) {
+    if (Y_STAGE_COMPLETE < height) {
+      // Draw a rectangle with the current background colour spanning a portion of the screen.
+      // This constitutes the falling animation that plays after a stage is completed.
+      rectMode(CENTER);
+      fill(backgroundColour);
+      noStroke();
+      rectMode(CORNER);
+      rect(0, 0, width, Y_STAGE_COMPLETE);
+      
+      Y_STAGE_COMPLETE += UNIT_Y;
+      return false;
+    }
+  }
+  
+  // Animation has finished, so just draw the whole background
+  background(backgroundColour);
+  return true;
 }
 
 void introGameLoop() {
@@ -318,7 +340,10 @@ void mainGameLoop() {
 }
 
 void stageCompleteLoop() {
-  drawBackgroundNight();
+  boolean hasEntryTransitionFinished = drawBackgroundNight();
+  if (!hasEntryTransitionFinished) {
+    return;
+  }
   
   fill(255, 255, 255);
   textSize(64);
