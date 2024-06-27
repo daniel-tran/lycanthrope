@@ -250,6 +250,12 @@ void drawBackground() {
   }
 }
 
+void drawBackgroundNight() {
+  // Background darkens as the stages progress for that "full moon in the night" effect
+  float darkFactor = float(MOON_MAX - GAME_STATS.stage) / MOON_MAX;
+  background(63 * darkFactor, 72 * darkFactor, 204 * darkFactor);
+}
+
 void introGameLoop() {
   background(0);
   
@@ -308,9 +314,7 @@ void mainGameLoop() {
 }
 
 void stageCompleteLoop() {
-  // Background darkens as the stages progress for that "full moon in the night" effect
-  float darkFactor = float(MOON_MAX - GAME_STATS.stage) / MOON_MAX;
-  background(63 * darkFactor, 72 * darkFactor, 204 * darkFactor);
+  drawBackgroundNight();
   
   fill(255, 255, 255);
   textSize(64);
@@ -341,7 +345,8 @@ void stageCompleteLoop() {
 }
 
 void winGameLoop() {
-  background(128, 128, 0);
+  drawBackgroundNight();
+  
   fill(255, 255, 255);
   textSize(64);
   textAlign(CENTER);
