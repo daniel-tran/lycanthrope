@@ -1,8 +1,8 @@
 class Item {
   int id;
+  int idMax = 31;
   int x;
   int y;
-  String name;
   // Items are OK to store image data since most items will use dedicated sprites
   // though it's worth keeping an eye on this if duplicate items are supported.
   PImage sprite;
@@ -19,25 +19,9 @@ class Item {
   // Sets various class members based on its ID (including the id property itself)
   void setPropertiesFromItemId(int itemId) {
     id = itemId;
-    // For now, just reuse the bread item when all the others have been spawned once
-    sprite = loadImage("images/Item" + min(itemId, 4) +".png");
-    switch(itemId) {
-      case 0:
-        name = "Cure";
-        break;
-      case 1:
-        name = "Fish";
-        break;
-      case 2:
-        name = "Homsar's Hat";
-        break;
-      case 3:
-        name = "Bear Plush";
-        break;
-      case 4:
-        name = "Bread";
-        break;
-    }
+    // Only spawn the cure item once, all others wrap around and are repeated
+    int imageId = itemId == 0 ? 0 : itemId % idMax + 1;
+    sprite = loadImage("images/Item" + imageId +".png");
   }
   
   void drawItem() {
@@ -48,7 +32,6 @@ class Item {
   }
   
   void setCollected() {
-    println("You found a " + name);
     isCollected = true;
   }
 }
