@@ -108,8 +108,8 @@ void gameReset() {
   int roomWidth = (GAME_STATS.stage + 1);
   int roomHeight = roomWidth;
   int totalRooms = roomWidth * roomHeight;
-  for (int col = 0; col < roomWidth; col++) {
-    for (int row = 0; row < roomHeight; row++) {
+  for (int row = 0; row < roomHeight; row++) {
+    for (int col = 0; col < roomWidth; col++) {
       int rowCurrent = row * roomWidth;
       int roomCurrent = rowCurrent + col;
       // Up and down are determined by taking the current room and adding or subtracting
@@ -126,6 +126,11 @@ void gameReset() {
       int right = rowCurrent + ((roomWidth + (col + 1)) % roomWidth);
       println("Room " + roomCurrent + ", Up: " + up + ", Right: " + right + ", Down: " + down + ", Left: " + left);
       
+      // Since rooms are added sequentially, room creation must done one row at a time.
+      // Creating the rooms per column causes warps to mess up, since adding a room
+      // into the global variable sets its reference index as well.
+      // (i.e. rooms are added in order of 0, 1, 2, ...
+      // instead of directly adding a room at index 'roomCurrent')
       ROOMS.add(new Room(up, right, down, left));
     }
   }
