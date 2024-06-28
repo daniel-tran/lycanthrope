@@ -190,7 +190,7 @@ void setup() {
   GAME_IMAGES.put("LOCK_ENABLED", loadImage("images/LockEnabled.png"));
   GAME_IMAGES.put("CURE", loadImage("images/Cure.png"));
   GAME_IMAGES.put("GAME_OVER", loadImage("GameOver.png"));
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i <= MOON_MAX; i++) {
     GAME_IMAGES.put("MOON" + i, loadImage("images/Moon" + i + ".png"));
   }
   gameReset();
