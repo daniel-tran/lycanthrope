@@ -222,6 +222,7 @@ void gameReset() {
 void setup() {
   size(960, 540);
   orientation(LANDSCAPE);
+  surface.setIcon(loadImage("images/Moon8.png")); // This line must be removed if running on Android
   textFont(createFont("GOTHICB.TTF", 32));
   UNIT_X = 50;
   UNIT_Y = UNIT_X;
