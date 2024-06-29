@@ -1,0 +1,5 @@
+# Auto-generated when sketches are run in Android mode
+code/
+AndroidManifest.xml
+# Generated when exporting the sketch
+windows-amd64/
