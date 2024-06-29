@@ -1,4 +1,5 @@
 import java.util.Map;
+import processing.sound.*;
 
 int UNIT_X;
 int UNIT_Y;
@@ -30,6 +31,7 @@ int ROOM_CURRENT_INDEX;
 ArrayList<Item> ITEMS_COLLECTED = new ArrayList<Item>();
 Stats GAME_STATS = new Stats();
 HashMap<String, PImage> GAME_IMAGES = new HashMap<String, PImage>();
+SoundFile BGM;
 
 // Returns the direction corresponding to the opposite of the given value
 String getOppositeDirection(String direction) {
@@ -54,6 +56,39 @@ int getItemsCount(int stage) {
     case 7: return 32;
     case 8: return 40;
     default: return 45;
+  }
+}
+
+// Plays background music, switching tracks as needed
+void updateBackgroundMusic() {
+  if (BGM == null) {
+    // This is the very first time a track is being played, which is also probably the tutorial level
+    BGM = new SoundFile(this, "music/Tutorial.mp3");
+  }
+  if (!BGM.isPlaying()) {
+    // Players can skip tracks if they progress fast enough before the current track ends.
+    // Note that loading soundtracks is an expensive operation, so the game might pause a bit when this
+    // happens mid-game. Loading all the tracks during setup results in much more noticeable startup
+    // lag and presumably more system resource usage as well.
+    switch (GAME_STATS.stage) {
+      case 2:
+      case 3:
+        BGM = new SoundFile(this, "music/StageAfternoon.mp3");
+        break;
+      case 4:
+      case 5:
+        BGM = new SoundFile(this, "music/StageEvening.mp3");
+        break;
+      case 6:
+      case 7:
+        BGM = new SoundFile(this, "music/StageLateEvening.mp3");
+        break;
+      case 8:
+      case 9:
+        BGM = new SoundFile(this, "music/StageNightfall.mp3");
+        break;
+    }
+    BGM.play();
   }
 }
 
@@ -206,6 +241,7 @@ void mousePressed() {
   switch(GAME_STATE) {
     case INTRO:
       GAME_STATE = GameState.IN_GAME;
+      updateBackgroundMusic();
       break;
     case IN_GAME:
       println(mouseX + ", " + mouseY);
@@ -421,9 +457,11 @@ void draw() {
       introGameLoop();
       break;
     case IN_GAME:
+      updateBackgroundMusic();
       mainGameLoop();
       break;
     case STAGE_COMPLETE:
+      updateBackgroundMusic();
       stageCompleteLoop();
       break;
     case GAME_WIN:
