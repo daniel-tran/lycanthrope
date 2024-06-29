@@ -282,8 +282,23 @@ void mousePressed() {
 
 // Draws a simple brick pattern
 void drawBackground() {
-  background(#C7A07A);
-  stroke(#000000);
+  if (GAME_STATS.itemsRemaining < 16) {
+    // Black bricks
+    background(#000000);
+    stroke(#7F7F7F);
+  } else if (GAME_STATS.itemsRemaining < 32) {
+    // Dark red bricks
+    background(#880015);
+    stroke(#FFFFFF);
+  } else if (GAME_STATS.itemsRemaining < 48) {
+    // Orange bricks with brown cement
+    background(#E75A1E);
+    stroke(#A5524A);
+  } else {
+    // Light brown bricks
+    background(#C7A07A);
+    stroke(#000000);
+  }
   
   int brickHeight = 5;
   int brickWidth = 10;
